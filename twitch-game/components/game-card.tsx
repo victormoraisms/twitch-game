@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowUp, ArrowDown, Eye } from "lucide-react"
 
 type Game = {
-  id: number
+  id: string | number
   title: string
   viewers: number
   image: string
