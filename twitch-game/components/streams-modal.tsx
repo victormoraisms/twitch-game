@@ -68,7 +68,7 @@ export function StreamsModal({ isOpen, onClose, gameId, gameName }: StreamsModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[90vw] max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[85vw] max-w-7xl h-[80vh] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl md:text-4xl font-bold">
             Top Streams: {gameName}
