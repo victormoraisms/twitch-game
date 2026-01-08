@@ -14,6 +14,7 @@ type TwitchStream = {
 type TwitchStreamDetail = {
   id: string
   user_name: string
+  user_login: string
   viewer_count: number
   thumbnail_url: string
   title: string
@@ -236,6 +237,7 @@ export async function getTopStreams(gameId: string): Promise<TwitchStreamDetail[
     return data.data.map((stream: any) => ({
       id: stream.id,
       user_name: stream.user_name,
+      user_login: stream.user_login,
       viewer_count: stream.viewer_count,
       thumbnail_url: stream.thumbnail_url
         .replace("{width}", "400")

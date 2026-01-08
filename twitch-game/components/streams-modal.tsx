@@ -14,6 +14,7 @@ import { getTopStreams } from "@/app/actions/getGames"
 type Stream = {
   id: string
   user_name: string
+  user_login: string
   viewer_count: number
   thumbnail_url: string
   title: string
@@ -92,34 +93,49 @@ export function StreamsModal({ isOpen, onClose, gameId, gameName }: StreamsModal
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
-            {streams.map((stream) => (
-              <Card key={stream.id} className="overflow-hidden border-2 hover:border-primary/50 transition-all hover:shadow-xl flex flex-col">
-                <div className="relative aspect-video overflow-hidden bg-muted w-full">
-                  <img
-                    src={stream.thumbnail_url}
-                    alt={`${stream.user_name} stream`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                </div>
-                <div className="p-6 flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-2xl truncate flex-1" title={stream.user_name}>
-                      {stream.user_name}
-                    </h3>
-                    <div className="flex items-center gap-2 bg-primary/10 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-primary/20 flex-shrink-0 ml-2">
-                      <Eye className="w-5 h-5 text-accent" />
-                      <span className="text-lg font-bold text-accent">
-                        {formatViewers(stream.viewer_count)}
-                      </span>
+            {streams.map((stream) => {
+              const streamUrl = `https://www.twitch.tv/${stream.user_login}`
+              
+              return (
+                <Card key={stream.id} className="overflow-hidden border-2 hover:border-primary/50 transition-all hover:shadow-xl flex flex-col">
+                  <a
+                    href={streamUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative aspect-video overflow-hidden bg-muted w-full block group"
+                  >
+                    <img
+                      src={stream.thumbnail_url}
+                      alt={`${stream.user_name} stream`}
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-80 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </a>
+                  <div className="p-6 flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <a
+                        href={streamUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-2xl truncate flex-1 hover:text-primary transition-colors"
+                        title={stream.user_name}
+                      >
+                        {stream.user_name}
+                      </a>
+                      <div className="flex items-center gap-2 bg-primary/10 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-primary/20 flex-shrink-0 ml-2">
+                        <Eye className="w-5 h-5 text-accent" />
+                        <span className="text-lg font-bold text-accent">
+                          {formatViewers(stream.viewer_count)}
+                        </span>
+                      </div>
                     </div>
+                    <p className="text-base text-muted-foreground line-clamp-2" title={stream.title}>
+                      {stream.title}
+                    </p>
                   </div>
-                  <p className="text-base text-muted-foreground line-clamp-2" title={stream.title}>
-                    {stream.title}
-                  </p>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              )
+            })}
           </div>
         )}
       </DialogContent>
