@@ -87,14 +87,27 @@ export function GameOverModal({ isOpen, score, highScore, onPlayAgain }: GameOve
                   className="w-full px-4 py-3 rounded-lg border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
-              <Button
-                type="submit"
-                size="lg"
-                disabled={isSubmitting || !nickname.trim()}
-                className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground neon-glow disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? "Saving..." : "Save Score"}
-              </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={isSubmitting || !nickname.trim()}
+                  className="h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground neon-glow disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Saving..." : "Save Score"}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handlePlayAgain}
+                  size="lg"
+                  disabled={isSubmitting}
+                  variant="secondary"
+                  className="h-14 text-lg font-bold bg-secondary hover:bg-secondary/80 text-secondary-foreground border-2 border-border hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <RotateCcw className="w-5 h-5 mr-2" />
+                  Play Again
+                </Button>
+              </div>
             </form>
           ) : (
             <div className="space-y-4">
