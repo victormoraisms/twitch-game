@@ -5,6 +5,7 @@ import { GameCard } from "@/components/game-card"
 import { ScoreDisplay } from "@/components/score-display"
 import { GameOverModal } from "@/components/game-over-modal"
 import { StreamsModal } from "@/components/streams-modal"
+import { PixModal } from "@/components/pix-modal"
 import { getRandomGamePair } from "@/app/actions/getGames"
 
 type Game = {
@@ -53,6 +54,7 @@ export function GameClient({ initialGamePair }: GameClientProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [streamsModalOpen, setStreamsModalOpen] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
+  const [pixModalOpen, setPixModalOpen] = useState(false)
 
   // Load high score from localStorage
   useEffect(() => {
@@ -197,15 +199,16 @@ export function GameClient({ initialGamePair }: GameClientProps) {
         )}
 
         <div className="flex justify-center mt-8 md:mt-12">
-          <a
-            href="https://buymeacoffee.com/victormoraisms"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => {
+              setPixModalOpen(true)
+              window.open("https://buymeacoffee.com/victormoraisms", "_blank", "noopener,noreferrer")
+            }}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#FFDD00] bg-[#FFDD00]/10 hover:bg-[#FFDD00]/20 text-foreground font-medium transition-all hover:scale-105 hover:shadow-lg"
           >
             <span className="text-xl">☕️</span>
             <span>Buy me a coffee</span>
-          </a>
+          </button>
         </div>
       </div>
 
@@ -222,6 +225,11 @@ export function GameClient({ initialGamePair }: GameClientProps) {
           gameName={selectedGame.title}
         />
       )}
+
+      <PixModal
+        isOpen={pixModalOpen}
+        onClose={() => setPixModalOpen(false)}
+      />
     </div>
   )
 }
