@@ -195,6 +195,18 @@ export function GameClient({ initialGamePair }: GameClientProps) {
             </div>
           </div>
         )}
+
+        <div className="flex justify-center mt-8 md:mt-12">
+          <a
+            href="https://buymeacoffee.com/victormoraisms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#FFDD00] bg-[#FFDD00]/10 hover:bg-[#FFDD00]/20 text-foreground font-medium transition-all hover:scale-105 hover:shadow-lg"
+          >
+            <span className="text-xl">☕️</span>
+            <span>Buy me a coffee</span>
+          </a>
+        </div>
       </div>
 
       <GameOverModal isOpen={gameOver} score={score} highScore={highScore} onPlayAgain={handlePlayAgain} />
