@@ -18,9 +18,10 @@ interface GameCardProps {
   onGuess?: (guess: "higher" | "lower") => void
   isCorrect?: boolean | null
   disabled?: boolean
+  onClick?: () => void
 }
 
-export function GameCard({ game, showViewers, position, onGuess, isCorrect, disabled = false }: GameCardProps) {
+export function GameCard({ game, showViewers, position, onGuess, isCorrect, disabled = false, onClick }: GameCardProps) {
   const formatViewers = (count: number) => {
     if (count >= 1000000) {
       return `${(count / 1000000).toFixed(1)}M`
@@ -39,7 +40,8 @@ export function GameCard({ game, showViewers, position, onGuess, isCorrect, disa
           : isCorrect === false
             ? "border-destructive bg-destructive/10"
             : "border-border hover:border-primary/50 bg-card"
-      }`}
+      } ${showViewers && onClick ? "cursor-pointer" : ""}`}
+      onClick={showViewers && onClick ? onClick : undefined}
     >
       <div className="relative aspect-[3/4] overflow-hidden">
         <img src={game.image || "/placeholder.svg"} alt={game.title} className="w-full h-full object-cover" />
@@ -71,7 +73,10 @@ export function GameCard({ game, showViewers, position, onGuess, isCorrect, disa
 
             <div className="grid grid-cols-2 gap-3">
               <Button
-                onClick={() => onGuess?.("higher")}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onGuess?.("higher")
+                }}
                 disabled={disabled}
                 size="lg"
                 className="h-14 md:h-16 text-base md:text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground neon-glow transition-all"
@@ -81,7 +86,10 @@ export function GameCard({ game, showViewers, position, onGuess, isCorrect, disa
               </Button>
 
               <Button
-                onClick={() => onGuess?.("lower")}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onGuess?.("lower")
+                }}
                 disabled={disabled}
                 size="lg"
                 variant="secondary"
