@@ -9,7 +9,7 @@ export function ScoreDisplay({ score, highScore }: ScoreDisplayProps) {
       <div className="container mx-auto px-4 py-4 md:py-6">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-4 md:gap-8">
-            <h1 className="text-2xl md:text-4xl font-bold neon-text text-foreground">Higher or Lower</h1>
+            <h1 className="text-2xl md:text-4xl font-bold neon-text text-foreground">Twitch - Higher or Lower!?</h1>
           </div>
 
           <div className="flex items-center gap-4 md:gap-8">
