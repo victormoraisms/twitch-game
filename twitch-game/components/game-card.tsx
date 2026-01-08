@@ -42,10 +42,17 @@ export function GameCard({ game, showViewers, position, onGuess, isCorrect, disa
             : "border-border hover:border-primary/50 bg-card"
       } ${onClick ? "cursor-pointer hover:scale-105 hover:border-primary hover:shadow-lg" : ""}`}
       onClick={onClick}
+      title={onClick ? "Click to watch live streams for this game" : undefined}
     >
       <div className="relative aspect-[3/4] overflow-hidden">
         <img src={game.image || "/placeholder.svg"} alt={game.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        {onClick && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+            <Eye className="w-4 h-4 text-white" />
+            <span className="text-sm font-medium text-white whitespace-nowrap">Click to watch live streams</span>
+          </div>
+        )}
       </div>
 
       <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
