@@ -68,9 +68,9 @@ export function StreamsModal({ isOpen, onClose, gameId, gameName }: StreamsModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[90vw] max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl md:text-3xl font-bold">
+          <DialogTitle className="text-2xl md:text-4xl font-bold">
             Top Streams: {gameName}
           </DialogTitle>
         </DialogHeader>
@@ -88,27 +88,27 @@ export function StreamsModal({ isOpen, onClose, gameId, gameName }: StreamsModal
             <div className="text-lg text-muted-foreground">No streams currently live for this game.</div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {streams.map((stream) => (
-              <Card key={stream.id} className="overflow-hidden border-2 hover:border-primary/50 transition-all">
-                <div className="relative aspect-video overflow-hidden">
+              <Card key={stream.id} className="overflow-hidden border-2 hover:border-primary/50 transition-all hover:shadow-lg">
+                <div className="relative aspect-video overflow-hidden bg-muted">
                   <img
                     src={stream.thumbnail_url}
                     alt={`${stream.user_name} stream`}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-2 left-2 right-2">
-                    <div className="flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded px-2 py-1">
-                      <Eye className="w-4 h-4 text-accent" />
-                      <span className="text-sm font-semibold text-white">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20">
+                      <Eye className="w-5 h-5 text-accent" />
+                      <span className="text-base font-bold text-white">
                         {formatViewers(stream.viewer_count)}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-lg mb-1 truncate" title={stream.user_name}>
+                <div className="p-5">
+                  <h3 className="font-bold text-xl mb-2 truncate" title={stream.user_name}>
                     {stream.user_name}
                   </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2" title={stream.title}>

@@ -40,8 +40,8 @@ export function GameCard({ game, showViewers, position, onGuess, isCorrect, disa
           : isCorrect === false
             ? "border-destructive bg-destructive/10"
             : "border-border hover:border-primary/50 bg-card"
-      } ${showViewers && onClick ? "cursor-pointer" : ""}`}
-      onClick={showViewers && onClick ? onClick : undefined}
+      } ${onClick ? "cursor-pointer hover:scale-105 hover:border-primary hover:shadow-lg" : ""}`}
+      onClick={onClick}
     >
       <div className="relative aspect-[3/4] overflow-hidden">
         <img src={game.image || "/placeholder.svg"} alt={game.title} className="w-full h-full object-cover" />
