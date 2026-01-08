@@ -1,8 +1,10 @@
 "use client"
 
+import { useState, FormEvent } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Trophy, RotateCcw } from "lucide-react"
+import { saveHighScore } from "@/app/actions/leaderboard"
 
 interface GameOverModalProps {
   isOpen: boolean
@@ -12,11 +14,36 @@ interface GameOverModalProps {
 }
 
 export function GameOverModal({ isOpen, score, highScore, onPlayAgain }: GameOverModalProps) {
+  const [nickname, setNickname] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const isNewHighScore = score === highScore && score > 0
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!nickname.trim() || isSubmitting || isSubmitted) return
+
+    setIsSubmitting(true)
+    try {
+      await saveHighScore(nickname.trim(), score)
+      setIsSubmitted(true)
+    } catch (error) {
+      console.error("Error saving high score:", error)
+      // Still allow play again even if save fails
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handlePlayAgain = () => {
+    setNickname("")
+    setIsSubmitted(false)
+    onPlayAgain()
+  }
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-md border-2 border-primary bg-card">
+      <DialogContent className="sm:max-w-md border-2 border-primary bg-card" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle className="text-3xl md:text-4xl font-bold text-center neon-text text-foreground">
             Game Over!
@@ -42,14 +69,61 @@ export function GameOverModal({ isOpen, score, highScore, onPlayAgain }: GameOve
             </div>
           </div>
 
-          <Button
-            onClick={onPlayAgain}
-            size="lg"
-            className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground neon-glow"
-          >
-            <RotateCcw className="w-5 h-5 mr-2" />
-            Play Again
-          </Button>
+          {!isSubmitted ? (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="nickname" className="block text-sm font-medium text-foreground mb-2">
+                  Enter your nickname for the leaderboard:
+                </label>
+                <input
+                  id="nickname"
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  placeholder="Your nickname"
+                  maxLength={50}
+                  required
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 rounded-lg border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={isSubmitting || !nickname.trim()}
+                  className="h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground neon-glow disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Saving..." : "Save Score"}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handlePlayAgain}
+                  size="lg"
+                  disabled={isSubmitting}
+                  variant="secondary"
+                  className="h-14 text-lg font-bold bg-secondary hover:bg-secondary/80 text-secondary-foreground border-2 border-border hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <RotateCcw className="w-5 h-5 mr-2" />
+                  Play Again
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-4">
+              <div className="text-center text-green-500 font-semibold">
+                ✓ Score saved to leaderboard!
+              </div>
+              <Button
+                onClick={handlePlayAgain}
+                size="lg"
+                className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground neon-glow"
+              >
+                <RotateCcw className="w-5 h-5 mr-2" />
+                Play Again
+              </Button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
