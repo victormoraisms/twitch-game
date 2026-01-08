@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { GameCard } from "@/components/game-card"
 import { ScoreDisplay } from "@/components/score-display"
 import { GameOverModal } from "@/components/game-over-modal"
+import { StreamsModal } from "@/components/streams-modal"
 import { getRandomGamePair } from "@/app/actions/getGames"
 
 type Game = {
@@ -50,6 +51,8 @@ export function GameClient({ initialGamePair }: GameClientProps) {
   const [gameOver, setGameOver] = useState(false)
   const [usedGames, setUsedGames] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [streamsModalOpen, setStreamsModalOpen] = useState(false)
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
 
   // Load high score from localStorage
   useEffect(() => {
@@ -124,6 +127,11 @@ export function GameClient({ initialGamePair }: GameClientProps) {
     }
   }
 
+  const handleGameCardClick = (game: Game) => {
+    setSelectedGame(game)
+    setStreamsModalOpen(true)
+  }
+
   const handlePlayAgain = async () => {
     setScore(0)
     setGameOver(false)
@@ -158,7 +166,12 @@ export function GameClient({ initialGamePair }: GameClientProps) {
 
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-7xl mx-auto">
-          <GameCard game={currentGame} showViewers={true} position="left" />
+          <GameCard
+            game={currentGame}
+            showViewers={true}
+            position="left"
+            onClick={() => handleGameCardClick(currentGame)}
+          />
 
           <GameCard
             game={nextGame}
@@ -167,6 +180,7 @@ export function GameClient({ initialGamePair }: GameClientProps) {
             onGuess={handleGuess}
             isCorrect={isCorrect}
             disabled={showAnswer || isLoading}
+            onClick={showAnswer ? () => handleGameCardClick(nextGame) : undefined}
           />
         </div>
 
@@ -184,6 +198,18 @@ export function GameClient({ initialGamePair }: GameClientProps) {
       </div>
 
       <GameOverModal isOpen={gameOver} score={score} highScore={highScore} onPlayAgain={handlePlayAgain} />
+      
+      {selectedGame && (
+        <StreamsModal
+          isOpen={streamsModalOpen}
+          onClose={() => {
+            setStreamsModalOpen(false)
+            setSelectedGame(null)
+          }}
+          gameId={selectedGame.id}
+          gameName={selectedGame.title}
+        />
+      )}
     </div>
   )
 }

@@ -11,6 +11,15 @@ type TwitchStream = {
   viewer_count: number
 }
 
+type TwitchStreamDetail = {
+  id: string
+  user_name: string
+  user_login: string
+  viewer_count: number
+  thumbnail_url: string
+  title: string
+}
+
 type TwitchTopGame = {
   id: string
   name: string
@@ -54,6 +63,7 @@ async function getTwitchAccessToken(): Promise<string> {
       client_secret: clientSecret,
       grant_type: "client_credentials",
     }),
+    next: { revalidate: 60 },
   })
 
   if (!response.ok) {
@@ -86,6 +96,7 @@ async function getGameViewerCounts(accessToken: string, clientId: string): Promi
         "Authorization": `Bearer ${accessToken}`,
         "Client-Id": clientId,
       },
+      next: { revalidate: 60 },
     })
 
     if (!response.ok) {
@@ -128,6 +139,7 @@ async function getGameDetails(accessToken: string, clientId: string, gameIds: st
         "Authorization": `Bearer ${accessToken}`,
         "Client-Id": clientId,
       },
+      next: { revalidate: 60 },
     })
 
     if (!response.ok) {
@@ -182,6 +194,60 @@ async function getTopGames(accessToken: string, clientId: string): Promise<Twitc
     .filter((game): game is TwitchTopGame => game !== null)
 
   return topGames
+}
+
+/**
+ * Server Action: Fetch top 3 streams for a specific game
+ */
+export async function getTopStreams(gameId: string): Promise<TwitchStreamDetail[]> {
+  try {
+    const clientId = process.env.TWITCH_CLIENT_ID
+    if (!clientId) {
+      throw new Error("TWITCH_CLIENT_ID is not configured")
+    }
+
+    // Get access token
+    const accessToken = await getTwitchAccessToken()
+
+    // Fetch top 3 streams for the game
+    const url = new URL("https://api.twitch.tv/helix/streams")
+    url.searchParams.append("game_id", gameId)
+    url.searchParams.append("first", "3")
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Client-Id": clientId,
+      },
+      next: { revalidate: 60 },
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(`Failed to fetch streams from Twitch: ${error}`)
+    }
+
+    const data = await response.json()
+    
+    if (!data.data || !Array.isArray(data.data)) {
+      return []
+    }
+
+    // Transform and format thumbnail URLs
+    return data.data.map((stream: any) => ({
+      id: stream.id,
+      user_name: stream.user_name,
+      user_login: stream.user_login,
+      viewer_count: stream.viewer_count,
+      thumbnail_url: stream.thumbnail_url
+        .replace("{width}", "400")
+        .replace("{height}", "225"),
+      title: stream.title,
+    }))
+  } catch (error) {
+    console.error("Error fetching top streams:", error)
+    throw error
+  }
 }
 
 /**
